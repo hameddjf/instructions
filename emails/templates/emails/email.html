@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    ایجاد نامه
+{% endblock %}
+
+{% block content %}
+    <style>
+        .page-container {
+            width: 21cm;
+            height: 29.7cm;
+            background-color: white;
+            margin: 0 auto;
+            padding: 2cm;
+            box-sizing: border-box;
+        }
+
+        textarea#id_message {
+            width: 105%; /* تنظیم عرض باکس متن */
+            height: 550px; /* تنظیم ارتفاع باکس متن */
+            display: block; /* نمایش به صورت بلوکی */
+            margin: 0 auto; /* قرار دادن در وسط */
+        }
+    </style>
+
+    <div class="page-container">
+        <div style="text-align: center;">
+            <h1>به نام خدا</h1>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div style="text-align: left;">
+                <p>تاریخ: <span id="current-date"></span></p>
+                <p>شماره نامه: <input type="text" name="number" maxlength="50" required id="id_number"></p>
+                <p style="float: right; font-weight: bold; display: inline-block;">موضوع: <input type="text"
+                                                                                                 name="subject"
+                                                                                                 maxlength="50" required
+                                                                                                 id="id_subject"></p>
+                <br><br>
+                <p style="float: right; font-weight: bold; display: inline-block;">از: <input type="text" name="from"
+                                                                                              maxlength="50" required
+                                                                                              id="id_from"
+                                                                                              value="{{ user.get_full_name }}">
+                </p><br><br>
+                <p style="float: right; font-weight: bold; display: inline-block;">به:
+                    <input type="text" id="search-input" name="search" placeholder="جستجو..."/>
+                </p>
+                <p>
+                    <textarea name="message" cols="40" rows="10" required id="id_message">
+</textarea>
+                </p><br><br>
+                <p>
+                    <label for="id_attachments">Attachments:</label>
+                    <input type="file" name="attachments" id="id_attachments">
+                </p>
+                <p>
+                    <label for="id_status">وضعیت :</label>
+                    <select name="status" id="id_status">
+                        <option value="drf" selected>پیشنویس</option>
+                        <option value="pub">انتشار</option>
+                    </select>
+                </p>
+                <p>
+                    <input type="checkbox" name="is_active" id="id_is_active" checked hidden="hidden">
+                </p>
+                <button type="submit" class="btn btn-success">ارسال</button>
+            </div>
+
+        </form>
+
+        <!-- قسمت اسکریپت و Ajax -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                var date = new Date();
+                var formattedDate = date.toLocaleDateString("fa-IR");
+                $(".date-placeholder").text(formattedDate);
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var currentDate = new Date().toLocaleDateString("fa-IR");
+                document.getElementById("current-date").textContent = currentDate;
+            });
+        </script>
+
+        <script>
+            $(document).ready(function () {
+                $('#search-input').on('input', function () {
+                    var query = $(this).val();
+                    if (query !== '') {
+                        $.ajax({
+                            url: '/search', // آدرس سرور جستجو
+                            method: 'GET',
+                            data: {query: query},
+                            success: function (results) {
+                                // نتایج جستجو را به صفحه اضافه کنید
+                                var resultList = $('#search-results');
+                                resultList.empty();
+                                if (results.length > 0) {
+                                    $.each(results, function (index, result) {
+                                        resultList.append('<li>' + result + '</li>');
+                                    });
+                                } else {
+                                    resultList.append('<li>نتیجه‌ای یافت نشد.</li>');
+                                }
+                            },
+                            error: function () {
+                                // پیغام خطا در صورت لزوم
+                            }
+                        });
+                    } else {
+                        // پاک کردن نتایج جستجو در صورت خالی بودن مقدار جستجوی ورودی
+                        $('#search-results').empty();
+                    }
+                });
+            });
+        </script>
+
+
+    </div>
+{% endblock %}

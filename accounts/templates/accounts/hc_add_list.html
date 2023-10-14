@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{#{% load bootstrap4 %}#}
+{#{% bootstrap_css %}#}
+{#{% bootstrap_javascript %}#}
+{#{% load crispy_forms_tags %}#}
+
+
+{% block title %}
+    add and list Health Center
+{% endblock %}
+
+{% block content %}
+    <br><br>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">افزودن</button>
+    <span>
+    </form>
+    <a href="{% url 'city_add_list' pk=city.province.id %}">
+            <button type="button" class="btn btn-primary">لیست شهرستان</button>
+    </a>
+    </span>
+    <div class="container" dir="rtl">
+        {#        <form method="get">#}
+        {#            <label for="start_date">Start date:</label>#}
+        {#            <input type="date" id="start_date" name="start_date">#}
+        {#            <label for="end_date">End date:</label>#}
+        {#            <input type="date" id="end_date" name="end_date">#}
+        {#            <button type="submit">Filter</button>#}
+        {##}
+        {#            <label for="query">Search:</label>#}
+        {#            <input type="text" id="query" name="q" value="{{ request.GET.q }}">#}
+        {#            <button type="submit">Search</button>#}
+        {#        </form>#}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>نام مرکز بهداشتی و درمانی</th>
+                <th>عملیات</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for healthcenter in healthcenter %}
+                <tr class="{% cycle 'table-light' 'table-info' %}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ healthcenter.name }}</td>
+                    <td>
+                        <a href="{% url 'village_add_list' healthcenter.id %}">
+                            <button class="btn btn-primary"
+                                    onclick="showDetails({{ healthcenter.id }})">افزودن روستا</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'hc_edit' healthcenter.id %}">
+                            <button class="btn btn-warning"
+                                    onclick="deleteBook({{ healthcenter.id }})">ویرایش</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'hc_delete' healthcenter.id %}">
+                            <button class="btn btn-danger"
+                                    onclick="deleteBook({{ healthcenter.id }})">حذف</button>
+                        </a>
+                    </td>
+
+                    {#                    <td>#}
+                    {#                        <div class="rating">#}
+                    {#                            <div class="rating-bg" style="width: {{ book.rating_percentage }}%"></div>#}
+                    {#                        </div>#}
+                    {#                        <p>{{ book.rating }} ({{ book.num_ratings }} ratings)</p>#}
+                    {#                    </td>#}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function showDetails(bookId) {
+            // TODO: Implement function to show book details for the selected row
+        }
+
+        function deleteBook(bookId) {
+            // TODO: Implement function to delete the selected book from the table
+        }
+    </script>
+{% endblock %}

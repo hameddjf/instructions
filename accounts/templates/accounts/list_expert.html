@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load jalali_tags %}
+{% load persian_translation_tags %}
+
+{% block title %}
+    لیست کارشناسان
+{% endblock %}
+
+{% block content %}
+    <form method="get">
+        <div class="form-group">
+            <label for="search">جستجو:</label>
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" id="search">
+        </div>
+        <button type="submit" class="btn btn-primary">جستجو</button>
+    </form>
+    <br>
+    <a href="{% url 'expert_register' %}"> ایجاد حساب کاربری جدید</a>
+
+    <br><br>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% else %}
+        <table class="table" dir="rtl">
+            <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>کد ملی</th>
+                <th>نام</th>
+                <th>نام خانوادگی</th>
+                <th>جنسیت</th>
+                <th>تاریخ تولد</th>
+                <th>شماره همراه</th>
+                <th>استان</th>
+                <th>شهرستان</th>
+                <th>مرکز بهداشتی</th>
+                <th>عملیات</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for expert in expert_list %}
+                <tr>
+                    <td>{{ forloop.counter|translate_numbers }}</td>
+                    <td>{{ expert.username|translate_numbers }}</td>
+                    <td>{{ expert.first_name }}</td>
+                    <td>{{ expert.last_name }}</td>
+                    <td>{{ expert.gender }}</td>
+                    <td>{{ expert.birthday|to_jalali:'%Y/%m/%d'|translate_numbers }}</td>
+                    <td>{{ expert.cell_phone|translate_numbers }}</td>
+                    <td>{{ expert.province }}</td>
+                    <td>{{ expert.city }}</td>
+                    <td>{{ expert.health_center|translate_numbers }}</td>
+                    <td>
+                        <a class="text-green" href="{% url 'expert_update' expert.id %}">ویرایش</a>
+                        <span> | </span>
+                        <a class="text text-red" href="{% url 'expert_delete' expert.id %}">حذف</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10">No Expert found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

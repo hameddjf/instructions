@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h2 class="mb-4">حذف مراقب سلامت</h2>
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete {{ username.first_name }} {{ username.last_name }} with National ID {{ object.username }}?</p>
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'behvarz_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+{% endblock %}

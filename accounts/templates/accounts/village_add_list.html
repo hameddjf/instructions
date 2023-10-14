@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{#{% load bootstrap4 %}#}
+{#{% bootstrap_css %}#}
+{#{% bootstrap_javascript %}#}
+{#{% load crispy_forms_tags %}#}
+
+
+{% block title %}
+    add and list cities
+{% endblock %}
+
+{% block content %}
+    <br><br>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">افزودن</button>
+    <span>
+    </form>
+    <a href="{% url 'hc_add_list' pk=healthcenter.city.id %}">
+            <button type="button" class="btn btn-primary">لیست مراکز بهداشتی</button>
+    </a>
+    </span>
+    <div class="container" dir="rtl">
+        {#            <label for="query">Search:</label>#}
+        {#            <input type="text" id="query" name="q" value="{{ request.GET.q }}">#}
+        {#            <button type="submit">Search</button>#}
+        {#        </form>#}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{% trans 'No.' %}</th>
+                <th>{% trans 'Title' %}</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for village in village %}
+                <tr class="{% cycle 'table-light' 'table-info' %}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ village.name }}</td>
+                    <td>
+                        {#                        <a href="{% url 'hc_add_list' city.id %}">#}
+                        {#                        <button class="btn btn-primary"#}
+                        {#                                onclick="showDetails({{ city.id }})">{% trans 'Health Care' %}</button>#}
+                        {#                        </a>#}
+                    </td>
+                    <td>
+                        <a href="{% url 'village_edit' village.id %}">
+                            <button class="btn btn-warning"
+                                    onclick="deleteBook({{ city.id }})">ویرایش</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'village_delete' village.id %}">
+                            <button class="btn btn-danger"
+                                    onclick="deleteBook({{ village.id }})">حذف</button>
+                        </a>
+                    </td>
+
+                    {#                    <td>#}
+                    {#                        <div class="rating">#}
+                    {#                            <div class="rating-bg" style="width: {{ book.rating_percentage }}%"></div>#}
+                    {#                        </div>#}
+                    {#                        <p>{{ book.rating }} ({{ book.num_ratings }} ratings)</p>#}
+                    {#                    </td>#}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function showDetails(bookId) {
+            // TODO: Implement function to show book details for the selected row
+        }
+
+        function deleteBook(bookId) {
+            // TODO: Implement function to delete the selected book from the table
+        }
+    </script>
+{% endblock %}

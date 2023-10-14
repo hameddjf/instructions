@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load ratings %}
+{% load persian_translation_tags %}
+{% load jalali_tags %}
+
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8">
+            <h3>جزئیات محتوای {{ instruction.get_type_display }} با موضوع "{{ instruction.title }}"</h3>
+            <hr>
+            <span>
+            {% if not user.user_type == 'behvarz' and instruction.user == user and not user.is_superuser %}
+                {% if instruction.status == 'pub' %}
+                    محتوا منتشر شده و قابلیت حذف و ویرایش وجود ندارد.
+                {% endif %}
+            {% endif %}
+                {% if instruction.status == 'drf' and instruction.user == user or user.is_superuser %}
+                    <a class="text-green" href="{% url 'instruction_update' instruction.id %}">ویرایش</a>
+                    |
+                {% endif %}
+                {% if instruction.status == 'drf' or user.is_superuser or user.user_type == 'manage' and instruction.user == user %}
+                    {% if instruction.is_active or user.is_superuser %}
+                        <a class="text-danger" href="{% url 'instruction_delete' instruction.id %}"> حذف</a>
+                    {% endif %}
+                {% endif %}
+                {% if not instruction.is_active and user.is_superuser %}
+                    <a href="{% url 'restore_instruction' instruction.id %}"
+                       class="badge badge-primary">بازیابی محتوا</a>
+                {% endif %}
+                {#                <a class="text-info" href="{% url 'self_instruction_list' %}">بازگشت</a>#}
+            </span>
+            <br>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ش.نامه</th>
+                    <th>محبوبیت</th>
+                    <th>برای مراقب سلامت</th>
+                    <th>برای کارشناس</th>
+                    <th>قابل نمایش</th>
+                    <th>تاریخ ایجاد</th>
+                    <th>تاریخ ویرایش</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ instruction.number|translate_numbers }}</td>
+                    <td>{% ratings object %}</td>
+                    <td>{% if instruction.for_behvarz %}Yes{% else %}No{% endif %}</td>
+                    <td>{% if instruction.for_expert %}Yes{% else %}No{% endif %}</td>
+                    <td>{% if instruction.is_active %}Yes{% else %}No{% endif %}</td>
+                    <td>{{ instruction.datetime_created|to_jalali:'%Y/%m/%d'|translate_numbers }}</td>
+                    <td>{{ instruction.datetime_updated|to_jalali:'%Y/%m/%d'|translate_numbers }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>تعداد مشاهده</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        {{ instruction.hits.count|translate_numbers }}
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <thead>
+                <tr>
+                    <th>توضیحات:</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td colspan="11">{{ instruction.description }}
+                    </td>
+                </tr>
+                </tfoot>
+                <thead>
+                <tr>
+                    <th>تگ ها:</th>
+                </tr>
+                </thead>
+                <tr>
+                    <td colspan="11">
+                        {% for tag in tags %}
+                            {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <tbody>
+                    <tr>
+                        <td>
+                        <th>دانلود فایل های ضمیمه:</th>
+                        {% for attachment in instruction.instruction_attach.all %}
+                            {% with file_name=attachment.file.name %}
+                                <br><br>
+                                <a href="{{ attachment.file.url }}" download>{{ attachment.file_name }}</a><br>
+                                {% if attachment.file %}
+                                    <br>
+                                    {% with file_url=request.get_host|add:'/'|add:attachment.file.url %}
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ file_url }}"
+                                             alt="QR Code" width="100" height="100">
+                                    {% endwith %}
+                                {% endif %}
+                                تعداد دانلود: {{ attachment.download_count|translate_numbers }}<br>
+                                <!-- اضافه کردن این خط -->
+                            {% endwith %}
+                        {% endfor %}
+                        </td>
+                        {#                        <td>{% if instruction.viewed %}Yes{% else %}No{% endif %}</td>#}
+                    </tr>
+                    </tbody>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

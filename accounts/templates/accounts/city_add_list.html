@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{#{% load bootstrap4 %}#}
+{#{% bootstrap_css %}#}
+{#{% bootstrap_javascript %}#}
+{#{% load crispy_forms_tags %}#}
+
+
+{% block title %}
+    لیست و افزودن شهرستان
+{% endblock %}
+
+{% block content %}
+    <br><br>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">ذخیره</button>
+        <span>
+    </form>
+    <a href="{% url 'province_add_list' %}">
+            <button type="button" class="btn btn-primary">لیست شهر</button>
+    </a>
+    </span>
+    <br>
+    <div class="container" dir="rtl">
+        {#        <form method="get">#}
+        {#            <label for="start_date">Start date:</label>#}
+        {#            <input type="date" id="start_date" name="start_date">#}
+        {#            <label for="end_date">End date:</label>#}
+        {#            <input type="date" id="end_date" name="end_date">#}
+        {#            <button type="submit">Filter</button>#}
+        {##}
+        {#            <label for="query">Search:</label>#}
+        {#            <input type="text" id="query" name="q" value="{{ request.GET.q }}">#}
+        {#            <button type="submit">Search</button>#}
+        {#        </form>#}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{% trans 'ذخیره' %}</th>
+                <th>{% trans 'شهرستان' %}</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for city in cities %}
+                <tr class="{% cycle 'table-light' 'table-info' %}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ city.name }}</td>
+                    <td>
+                        <a href="{% url 'hc_add_list' city.id %}">
+                            <button class="btn btn-primary"
+                                    onclick="showDetails({{ city.id }})">{% trans 'افزودن و لیست مراکز بهداشتی' %}</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'city_edit' city.id %}">
+                            <button class="btn btn-warning"
+                                    onclick="deleteBook({{ city.id }})">{% trans 'ویرایش' %}</button>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{% url 'city_delete' city.id %}">
+                            <button class="btn btn-danger"
+                                    onclick="deleteBook({{ city.id }})">{% trans 'حذف' %}</button>
+                        </a>
+                    </td>
+
+                    {#                    <td>#}
+                    {#                        <div class="rating">#}
+                    {#                            <div class="rating-bg" style="width: {{ book.rating_percentage }}%"></div>#}
+                    {#                        </div>#}
+                    {#                        <p>{{ book.rating }} ({{ book.num_ratings }} ratings)</p>#}
+                    {#                    </td>#}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function showDetails(bookId) {
+            // TODO: Implement function to show book details for the selected row
+        }
+
+        function deleteBook(bookId) {
+            // TODO: Implement function to delete the selected book from the table
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{#{% load crispy_forms_tags %}#}
+
+
+
+{% block title %}
+    Village Edit
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Village Edit</h1>
+        <form method="post" , action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Save</button>
+        </form>
+        <a href="{% url 'village_add_list' pk=village.health_center.id %}">
+            <button type="button" class="btn btn-success">Health Center List</button>
+        </a>
+    </div>
+{% endblock %}

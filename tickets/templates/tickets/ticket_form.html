@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Ticket Form</title>
+{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">ایجاد تیکت</h3>
+            </div>
+            <div class="card-body">
+                <h1>ایجاد تیکت </h1>
+                <form method="post" action="{% url 'create_tickets' %}" enctype="multipart/form-data">
+
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-row">
+                            <div class="form-group col-md-12 text-left">
+                                <label for="title">موضوع:</label>
+                                <input type="text" name="title" id="title" class="form-control" required>
+                            </div>
+
+                            <div class="form-group col-md-12 text-left">
+                                <label for="description">توضیحات:</label>
+                                <textarea name="description" id="description" class="form-control" required></textarea>
+                            </div>
+
+                            <div class="form-group col-md-4 text-left">
+                                <label for="priority">الویت:</label>
+                                <select name="priority" id="priority" class="form-control">
+                                    <option value="low">کم</option>
+                                    <option value="medium">متوسط</option>
+                                    <option value="high">زیاد</option>
+                                </select>
+                            </div>
+{#                            <div class="form-group col-md-4 text-left">#}
+{#                                <label for="attachment">افزودن فایل:</label>#}
+{#                                <input type="file" name="attachment" id="id_attachment" class="btn-outline-success">#}
+{#                            </div>#}
+
+                            <div class="form-group col-md-4 text-left">
+                                <label for="id_attachment">افزودن فایل:</label>
+                                <input type="file" name="attachment" id="id_attachment" class="btn-outline-success" multiple="multiple">
+                            </div>
+
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-outline-success">ثبت و ارسال تیکت</button>
+                    <a href="{% url 'list_tickets' user.id %}">
+                        <button type="button" class="btn btn-outline-info">مشاهده تیکت های ارسال شده</button>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

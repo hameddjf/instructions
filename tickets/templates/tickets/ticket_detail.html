@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    جزئیات تیکت
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-2 float-left">جزئیات تیکت</h3>
+            </div>
+            <div class="card-body ">
+                <table class="table table-striped">
+                    <tr>
+                        <th>عنوان:</th>
+                        <td>{{ ticket.title }}</td>
+                        <th>تاریخ ایجاد:</th>
+                        <td>{{ ticket.created_at }}</td>
+                    </tr>
+                    {#                    <tr>#}
+                    {#                        <th>توضیحات:</th>#}
+                    {#                        <td>{{ ticket.description }}</td>#}
+                    {#                    </tr>#}
+                    <tr>
+                        <th>اولویت:</th>
+                        <td>{{ ticket.priority }}</td>
+                        <th>ضمیمه:</th>
+                        <td>
+                            {% if attachments %}
+                                {% for attachment in attachments %}
+                                    <a href="{{ attachment.file.url }}">{{ forloop.counter }}. دانلود ضمیمه</a><br>
+                                {% endfor %}
+                            {% else %}
+                                ندارد
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>توضیحات:</th>
+                        <td>{{ ticket.description }}</td>
+                    </tr>
+                </table>
+                <br><br>
+                {% if user.is_superuser or ticket.user == user %}
+                    {% if comments %}
+                        <h4>گفتگو:</h4>
+
+                        {% for comment in comments %}
+                            <div class="comment-box {% if comment.user.is_staff %}admin-comment{% else %}user-comment{% endif %}">
+                                <p>{{ comment.text }}</p>
+                                <p>By {{ comment.user.get_full_name }} at {{ comment.created_at }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    {% if ticket.status == 'open' %}
+                        <h4>پاسخ:</h4>
+                        <form method="post" action="{% url 'detail_ticket' pk=ticket.pk %}">
+                            {% csrf_token %}
+                            {% if not user.is_superuser %}
+                                <p>
+                                    <textarea name="text" cols="100" rows="10" required id="id_text"></textarea>
+                                </p>
+                            {% else %}
+                                <p>
+                                    <textarea name="text" cols="100" rows="10" id="id_text"></textarea>
+                                </p>
+                                <select name="status" id="id_status" style="font-size: 18px; width: 200px;">
+                                    <option value="open">باز</option>
+                                    <option value="close">بسته</option>
+                                </select>
+                            {% endif %}
+                            <button type="submit" class="btn btn-outline-success">ارسال پاسخ</button>
+                        </form>
+                    {% endif %}
+                {% else %}
+                    <p> شما به این تیکت دسترسی ندارید</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#id_status').on('change', function () {
+                if ($(this).val() === 'close') {
+                    $('#id_text').val('این تیکت توسط {{user.get_full_name}} بسته شد');
+                } else {
+                    $('#id_text').val('');
+                }
+            });
+        });
+    </script>
+    <style>
+        .comment-box {
+            border: 1px solid;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .admin-comment {
+            border-color: #f00;
+            background-color: #ffe6e6;
+        }
+
+        .user-comment {
+            border-color: #00f;
+            background-color: #e6e6ff;
+        }
+    </style>
+{% endblock %}

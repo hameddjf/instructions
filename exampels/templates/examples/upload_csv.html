@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+{% block content %}
+
+    <h1>آپلود فایل CSV</h1>
+    <form action="{% url 'upload_csv' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="csv_file" accept=".csv">
+        <button type="submit">آپلود</button>
+    </form>
+
+        {% for key, value in data.items %}
+            <p><strong>{{ key }}:</strong> {{ value }}</p>
+        {% endfor %}
+
+{% endblock %}

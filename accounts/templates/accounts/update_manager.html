@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    ویرایش حساب کاربری مدیر
+{% endblock %}
+
+{% block content %}
+
+{#        <div class="container">#}
+{#            <form method="post" action="" name="behvarzCreationForm">#}
+{#                {% csrf_token %}#}
+{#                {{ form.as_p }}#}
+{#                <input type="submit" class="btn btn-success" value="accept">#}
+{#            </form>#}
+{#        </div>#}
+    <form method="post" id="managerChangeForm" novalidate>
+        {% csrf_token %}
+        <p>
+            <label for="id_user_type">User type:</label>
+            <select name="user_type" id="id_user_type">
+                <option value="">---------</option>
+
+                <option value="manager" selected>Manager</option>
+
+                <option value="expert">Expert</option>
+
+                <option value="behvarz">Behvarz</option>
+
+            </select>
+        </p>
+        <p>
+            <label for="id_username">Username:</label>
+            <input type="text" name="username" maxlength="150" autofocus required id="id_username"
+                   value="{{ user.username }}">
+        </p>
+        <p>
+            <label for="id_first_name">First Name:</label>
+            <input type="text" name="first_name" id="id_first_name" value="{{ user.first_name }}">
+        </p>
+        <p>
+            <label for="id_last_name">Last Name:</label>
+            <input type="text" name="last_name" id="id_last_name" value="{{ user.last_name }}">
+        </p>
+        <p>
+            <label for="id_gender">Gender:</label>
+            <select name="gender" id="id_gender">
+                <option value="">---------</option>
+
+                <option value="man" {% if user.gender == 'man' %}selected{% endif %}>Man</option>
+
+                <option value="women" {% if user.gender == 'women' %}selected{% endif %}>Women</option>
+
+                <option value="other" {% if user.gender == 'other' %}selected{% endif %}>Other</option>
+
+            </select>
+        </p>
+        <p>
+            <label for="id_birthday">Birthday:</label>
+            <input type="text" name="birthday" id="id_birthday" value="{{ user.birthday }}">
+        </p>
+        <p>
+            <label for="id_cell_phone">Cell phone:</label>
+            <input type="number" name="cell_phone" id="id_cell_phone" value="{{ user.cell_phone }}">
+        </p>
+        <table>
+            <tr>
+                <th><label for="id_province">Province:</label></th>
+                <td>
+                    <select name="province" id="id_province" required>
+                        <option value="">---------</option>
+                        {% for province in provinces %}
+                            <option value="{{ province.pk }}"
+                                    {% if user.province.pk == province.pk %}selected{% endif %}>
+                                {{ province.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th><label for="id_city">City:</label></th>
+                <td>
+                    <select name="city" id="id_city" required>
+                        <option value="">---------</option>
+                        {% for city in cities %}
+                            <option value="{{ city.pk }}" data-province="{{ city.province.pk }}"
+                                    {% if user.city.pk == city.pk %}selected{% endif %}>{{ city.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <button type="submit" class="btn btn-success">بروزرسانی</button>
+        <span>  <a href="{% url 'manager_list' %}" class="btn btn-info">انصراف</a> </span>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Show only the cities of the selected province
+            $("#id_province").change(function () {
+                var provinceId = $(this).val();
+                $("#id_city option").each(function () {
+                    if ($(this).data("province") == provinceId || $(this).val() == "") {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+                $("#id_city").val("");
+                $("#id_health_centers").val("");
+                $("#id_villages").val("");
+            });
+
+            // Show only the health centers of the selected city
+            $("#id_city").change(function () {
+                var cityId = $(this).val();
+                $("#id_health_centers option").each(function () {
+                    if ($(this).data("city") == cityId || $(this).val() == "") {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+                $("#id_health_centers").val("");
+                $("#id_villages").val("");
+            });
+
+
+            // Show only the villages of the selected health center
+            $("#id_health_centers").change(function () {
+                var healthCenterId = $(this).val();
+                $("#id_villages option").each(function () {
+                    if ($(this).data("health-center") == healthCenterId || $(this).val() == "") {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+                $("#id_villages").val("");
+            });
+
+            // Initialize the form with the default province, city, and health center
+            var defaultProvinceId = "{{ default_province_id }}";
+            var defaultCityId = "{{ default_city_id }}";
+            var defaultHealthCenterId = "{{ default_health_center_id }}";
+            var defaultVillageId = "{{ default_village_id }}";
+            if (defaultProvinceId) {
+                $("#id_province").val(defaultProvinceId).trigger("change");
+            }
+            if (defaultCityId) {
+                $("#id_city").val(defaultCityId).trigger("change");
+            }
+            if (defaultHealthCenterId) {
+                $("#id_health_centers").val(defaultHealthCenterId).trigger("change");
+            }
+            if (defaultVillageId) {
+                $("#id_villages").val(defaultVillageId).trigger("change");
+            }
+        });
+    </script>
+{% endblock %}

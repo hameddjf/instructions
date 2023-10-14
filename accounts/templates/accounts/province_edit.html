@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{#{% load crispy_forms_tags %}#}
+
+
+
+{% block title %}
+    Province Edit
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Province Edit</h1>
+        <form method="post" , action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Save</button>
+            <a href="{% url 'province_add_list' %}">
+                <button type="button" class="btn btn-success">Province List</button>
+            </a>
+        </form>
+
+        {#        <table class="table table-striped">#}
+        {#            <thead>#}
+        {#            <tr>#}
+        {#                <th>Name</th>#}
+        {#                <th>Function</th>#}
+        {#            </tr>#}
+        {#            </thead>#}
+        {#            <tbody>#}
+        {#            <tr>#}
+        {#                <td>{{ province.name }}</td>#}
+        {#                <td>{{ book.author }}</td>#}
+        {#                <td>{% if book.is_free %}Yes{% else %}No{% endif %}</td>#}
+        {#                <td>{{ book.genres.all|join:', ' }}</td>#}
+        {#                <td>{{ book.language|language_name }}</td>#}
+        {#                <td>{{ book.format }}</td>#}
+        {#                <td>{{ book.page }}</td>#}
+        {#                <td><a href="{% url 'book_update' book.id %}">Update</a></td>#}
+        {#                <td>#}
+        {#                    {% if book.pdf_file %}#}
+        {#                        <a href="{{ book.pdf_file.url }}" download>Download PDF</a>#}
+        {#                    {% else %}#}
+        {#                        <p>PDF file not available.</p>#}
+        {#                    {% endif %}#}
+        {#                </td>#}
+        {#                 <td>{{ book.pdf_size }}</td>#}
+        {#            </tr>#}
+        {#            </tbody>#}
+        {#        </table>#}
+    </div>
+{% endblock %}

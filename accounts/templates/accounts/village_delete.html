@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{#{% load crispy_forms_tags %}#}
+
+{% block title %}
+    Village delete
+{% endblock %}
+
+{% block content %}
+    <h1>Village Delete Page</h1>
+    <h3>are you sure delete the {{ village.name }} ?!</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <a href="{% url 'village_add_list' pk=village.health_center.id %}">
+        <button type="button" class="btn btn-success">Health Center List</button>
+    </a>
+{% endblock %}

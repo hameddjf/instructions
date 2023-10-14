@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load persian_translation_tags %}
+
+{% block title %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-8 text-center mx-auto">
+        <div class="card card-danger">
+            <div class="card-header">
+                <h3 class="card-title mb-0 float-left">حذف دستورالعمل</h3>
+            </div>
+            <div class="card-body py-4">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <p class="py-2">آیا از حذف مقاله "{{ instruction.title }}" با شماره نامه "{{ instruction.number|translate_numbers }}" اطمینان
+                        دارید؟</p>
+                    <button type="submit" class="btn btn-danger">حذف {{ instruction.type }}</button>
+                    <span>  <a href="{% url 'instruction_list' %}" class="btn btn-info">انصراف</a> </span>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

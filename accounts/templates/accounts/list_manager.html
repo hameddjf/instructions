@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load jalali_tags %}
+{% load persian_translation_tags %}
+
+{% block title %}
+    لیست مدیران
+{% endblock %}
+
+{% block content %}
+    <form method="get">
+        <div class="form-group">
+            <label for="search">جستجو :</label>
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" id="search">
+        </div>
+        <button type="submit" class="btn btn-primary">جستجو</button>
+    </form>
+    <br>
+    <a href="{% url 'manager_register' %}">ایجاد حساب کاربری جدید</a>
+    <br><br>
+    <table class="table" dir="rtl">
+        <thead>
+        <tr>
+            <th>ردیف</th>
+            <th>کد ملی</th>
+            <th>نام</th>
+            <th>نام خانوادگی</th>
+            <th>جنسیت</th>
+            <th>تاریخ تولد</th>
+            <th>شماره همراه</th>
+            <th>استان</th>
+            <th>شهرستان</th>
+            <th>عملیات</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for manager in manager_list %}
+            <tr>
+                <td>{{ forloop.counter|translate_numbers }}</td>
+                <td>{{ manager.username|translate_numbers }}</td>
+                <td>{{ manager.first_name }}</td>
+                <td>{{ manager.last_name }}</td>
+                <td>{{ manager.gender }}</td>
+                <td>{{ manager.birthday|to_jalali:'%Y/%m/%d'|translate_numbers }}</td>
+                <td>{{ manager.cell_phone|translate_numbers }}</td>
+                <td>{{ manager.province }}</td>
+                <td>{{ manager.city }}</td>
+                <td>
+                    <a class="text-green" href="{% url 'manager_update' manager.id %}">ویرایش</a>
+                    <span> | </span>
+                    <a class="text text-red" href="{% url 'manager_delete' manager.id %}">حذف</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="10">No Expert found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

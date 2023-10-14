@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h2 class="mb-4">حذف حساب کاربری کارشناس</h2>
+        <form method="post">
+            {% csrf_token %}
+            <p>Are you sure you want to delete {{ username.first_name }} {{ username.last_name }} with National ID {{ object.username }}?</p>
+            <button type="submit" class="btn btn-danger">حذف حساب</button>
+            <a href="{% url 'expert_list' %}" class="btn btn-secondary">انصراف</a>
+        </form>
+    </div>
+{% endblock %}

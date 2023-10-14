@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <!-- در فایل upload_text.html -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>نام کاربر: {{ form.user.value }}</p>
+        <p>استان: {{ form.province.value }}</p>
+        <p>شهر: {{ form.city.value }}</p>
+        <p>مرکز یهداشتی درمانی: {{ form.health_center.value }}</p>
+        <p>روستا: {{ form.village.value }}</p>
+        <input type="file" name="text_file">
+        <button type="submit">Upload</button>
+    </form>
+    {% if was_uploaded %}
+        <p>File uploaded and processed successfully!</p>
+    {% endif %}
+{% endblock %}

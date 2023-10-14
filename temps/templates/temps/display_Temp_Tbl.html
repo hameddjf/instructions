@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load persian_translation_tags %}
+{% load jalali_tags %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <!-- In the display_text.html file -->
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">گزارش‌های دستگاه: {{ device.serial }}</h3>
+            </div>
+            <div class="card-body">
+
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>تاریخ</th>
+                        <th>زمان حداقل دما</th>
+                        <th>حداقل دما</th>
+                        <th>زمان هشدار سرما</th>
+                        <th>زمان حداکثر دما</th>
+                        <th>حداکثر دما</th>
+                        <th>زمان هشدار گرما</th>
+                        <th>میانگین دما</th>
+                        <th>زمان قطع ارتباط</th>
+                        <th>تعداد رویدادها</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+
+                    {% for report in reports %}
+                        <tr>
+                                <td>{{ report.date|to_jalali:'%Y/%m/%d'|translate_numbers }}</td>
+                                <td>{{ report.min_temp_time|translate_numbers }}</td>
+                                <td>{{ report.min_temp|translate_numbers }}</td>
+                                <td style="color: {% if report.alarm0_time >= 60 %}red{% endif %}">
+                                    {{ report.alarm0_time|translate_numbers }}
+                                </td>
+                                <td>{{ report.max_temp_time|translate_numbers }}</td>
+                                <td>{{ report.max_temp|translate_numbers }}</td>
+                                <td style="color: {% if report.alarm1_time >= 600 %}red{% endif %}">
+                                    {{ report.alarm1_time|translate_numbers }}
+                                </td>
+
+                                <td>{{ report.avg_temp|translate_numbers }}</td>
+                                <td>{{ report.timeout_time|translate_numbers }}</td>
+                                <td>{{ report.events|translate_numbers }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'home' %}">بازگشت به خانه</a>
+{% endblock %}

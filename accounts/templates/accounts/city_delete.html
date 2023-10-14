@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{#{% load crispy_forms_tags %}#}
+
+{% block title %}
+    City delete
+{% endblock %}
+
+{% block content %}
+    <h1>City delete page</h1>
+    <h3>are you sure delete the {{ city.name }} ?!</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+    <a href="{% url 'city_add_list' pk=city.province.id %}">
+        <button type="button" class="btn btn-success">Cities List</button>
+    </a>
+{% endblock %}

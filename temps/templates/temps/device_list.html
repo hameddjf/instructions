@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% load persian_translation_tags %}
+{% load jalali_tags %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">لیست دمای یخچال</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>شماره سریال</th>
+                        <th>نام کاربر</th>
+                        <th>مرکز بهداشتی</th>
+                        <th>خانه بهداشت</th>
+                        <th>تاریخ آخرین آپدیت</th>
+                        <th>تاریخ ایجاد گزارش</th>
+                        <th>عملیات</th>
+                    </tr>
+
+                    {% for device in devices %}
+                        {#                        {% if user.is_superuser or device.user.health_center == user.health_center or device.user == user %}#}
+                        <tr>
+                            <td>{{ device.serial|translate_numbers }}</td>
+                            <td>{{ device.user|translate_numbers }}</td>
+                            <td>{{ device.user.health_center|translate_numbers }}</td>
+
+                            <td>{% if device.user.village %}{{ device.user.village|translate_numbers }}{% else %}
+                                -
+                            {% endif %}</td>
+
+                            <td>{{ device.last_data_date|to_jalali:'%Y/%m/%d'|translate_numbers }}</td>
+                            <td>{{ device.created_at|to_jalali:'%Y/%m/%d'|translate_numbers }}</td>
+                            <td><a href="{% url 'device-reports' device.id %}">نمایش گزارش‌ها</a> |
+                                <a href="{% url 'draw_temp' device.id %}">نمایش نمودار</a> |
+                                <a href="{% url 'regression' device.id %}">نمایش رگرسیون</a></td>
+                        </tr>
+                        {#                        {% endif %}#}
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

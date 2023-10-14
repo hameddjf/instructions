@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Places Table
+{% endblock %}
+
+{% block content %}
+    <table class="table table-striped" dir="rtl">
+    <thead>
+        <tr>
+            <th>استان</th>
+            <th>شهر</th>
+            <th>مرکز بهداشتی درمان</th>
+            <th>روستا</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for province_data in province_city_data %}
+            {% for city_name in province_data.city_names %}
+                {% for city_center in city_center_data %}
+                    {% if city_center.city_name == city_name %}
+                        {% for health_center_name in city_center.health_center_names %}
+                            {% for village_name in city_center.village_names %}
+                                <tr>
+                                    <td>{{ province_data.province_name }}</td>
+                                    <td>{{ city_name }}</td>
+                                    <td>{{ health_center_name }}</td>
+                                    <td>{{ village_name }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

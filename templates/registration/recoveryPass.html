@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Rafle">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه ورود</title>
+
+    <!-- Bootstrap CSS v4.1.x -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <!-- Fontsawesome CDN -->
+    <script src="https://use.fontawesome.com/e69b0efea7.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+
+    <!-- Refle CSS -->
+    <link rel="stylesheet" href="{% static 'css/refle.css' %}">
+</head>
+
+<body class="refle-login rtl">
+<section class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-md-center h-100">
+            <div class="card-wrapper">
+                <h2 class="title text-center ">
+                    حساب کاربری
+                </h2>
+                <div class="card fat">
+                    <div class="card-body">
+                        <div class="card-title">بازیابی رمز عبور</div>
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="text">شماره ملی</label>
+                                <input id="id_username" type="text" class="form-control" name="username" maxlength="50"
+                                       placeholder="شماره ملی خودرا وارد کنید" value="" required autofocus>
+                                <div class="invalid-feedback">
+                                    شماره ملی وارد شده اشتباه است.
+                                </div>
+
+                                <label for="id_cell_phone">شماره همراه:</label>
+                                <input type="text" name="cell_phone" value=""
+                                       id="id_cell_phone"
+                                       class="form-control">
+
+                                <label for="id_security_q">یک سوال امنیتی انتخاب کنید:</label>
+                                <select name="security_q" class="form-control" id="id_security_q">
+                                    {% for option in form.security_q %}
+                                        {{ option }}
+                                    {% endfor %}
+                                </select>
+
+                                <label for="id_security_key">پاسخ امنیتی</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="security_key" value=""
+                                           id="id_security_key"
+                                           class="form-control">
+                                    <div class="invalid-feedback">
+                                        پاسخ به سوال اجباری است.
+                                    </div>
+                                </div>
+                                {% if error %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ error }}
+                                    </div>
+                                {% endif %}
+                                <label for="id_new_password">رمزعبور جدید شما</label>
+                                <div class="input-group mb-3">
+                                    <input class="form-control" name="new_password" readonly {{ form.new_password }}>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-sm btn-primary btn-block"
+                                        id="password-recovery-button">
+                                    نمایش کلمه عبور
+                                </button>
+                                <br>
+                                <a href="{% url 'login' %}">
+                                    <button type="button" class="btn btn-sm btn-primary btn-block">
+                                        صفحه ورود
+                                    </button>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="footer">
+                    {#                        Copyright &copy; 2020 &mdash; Your Company#}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="js/jquery-3.5.0.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/refle.js"></script>
+</body>
+
+</html>

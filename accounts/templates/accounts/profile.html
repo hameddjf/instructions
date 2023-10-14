@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load persian_translation_tags %}
+{% load jalali_tags %}
+
+{% block title %}
+    حساب کاربری
+{% endblock %}
+
+{% block content %}
+    <style>
+        .profile-img {
+            position: absolute;
+            top: 100px;
+            width: 400px !important;
+            height: 400px !important;
+            border-radius: 50%;
+            border: 8px solid white;
+            box-shadow: 0 0 10px #ccc !important;
+        }
+
+        {#.d-flex.justify-content-center {#}
+        {#    align-items: center;#}
+        {#}#}
+        {##}
+        {#.d-flex.justify-content-center img {#}
+        {#    max-width: 400%;#}
+        {#    max-height: 400%;#}
+        {#    border-radius: 50%;#}
+        {#    border: 8px solid white;#}
+        {#    box-shadow: 0 0 20px #ccc;#}
+        {#}#}
+    </style>
+
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">حساب کاربری</h3>
+            </div>
+
+            <div class="card-body">
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row align-items-center">
+                        <div class="col-lg-7 text- text-lg-right">
+                            <!-- محتوای متنی -->
+                        </div>
+                        <div class="col-lg-5 px-5 pl-lg-1 pb-5 pb-lg-0">
+                            <div class="d-flex justify-content-center">
+                                {% if user.photo %}
+                                    <img class="img-fluid rounded-circle shadow-sm profile-img"
+                                         src="{{ user.photo.url }}"
+                                         alt="تصویر پروفایل">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="id_first_name">نام:</label>
+                            <input type="text" name="first_name" value="{{ user.first_name }}" maxlength="30"
+                                   id="id_first_name" class="form-control">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="id_last_name">نام خانوادگی:</label>
+                            <input type="text" name="last_name" value="{{ user.last_name }}" maxlength="30"
+                                   id="id_last_name" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="id_birthday">تاریخ تولد:</label>
+                            <input type="date" name="birthday" value="{{ user.birthday|date:'Y-m-d' }}" id="id_birthday"
+                                   class="form-control">
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label for="id_gender">جنسیت:</label>
+                            <select name="gender" id="id_gender" class="form-control">
+                                <option value="">---------</option>
+                                <option value="man" {% if user.gender == 'man' %}selected{% endif %}>مرد</option>
+                                <option value="women" {% if user.gender == 'women' %}selected{% endif %}>زن</option>
+                                <option value="other" {% if user.gender == 'other' %}selected{% endif %}>نامشخص</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="id_education">تحصیلات:</label>
+                            <select name="education" id="id_education" class="form-control">
+                                {% for edu in form.education %}
+                                    {{ edu }}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="id_cell_phone">شماره همراه:</label>
+                            <input type="text" name="cell_phone" value="{{ user.cell_phone|translate_numbers }}"
+                                   id="id_cell_phone"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="id_province">استان:</label>
+                            <select name="province" id="id_province" disabled class="form-control">
+                                <option value="">{{ user.province }}</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="id_city">شهرستان:</label>
+                            <select name="city" id="id_city" disabled class="form-control">
+                                <option value="">{{ user.city }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    {% if not user.user_type == 'manager' %}
+                        <div class="form-row">
+                            <div class="form-group col-md-3">
+                                <label for="id_health_center">مرکز بهداشتی درمانی:</label>
+                                <select name="health_center" id="id_health_center" disabled class="form-control">
+                                    <option value="" selected>{{ user.health_center }}</option>
+                                </select>
+                            </div>
+
+                            {% if not user.user_type == 'expert' %}
+                                <div class="form-group col-md-3">
+                                <label for="id_village">روستا:</label>
+                                <select name="village" id="id_village" disabled class="form-control">
+                                    <option value="" selected>{{ user.village }}</option>
+                                </select>{% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="id_photo">تصویر پروفایل:</label>
+                            <input type="file" name="photo" id="id_photo" class="form-control-file"
+                                   onchange="previewImage(this)">
+                            <img id="preview" src="#" alt="Preview"
+                                 style="display: none; max-width: 200px; margin-top: 10px;">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="id_security_q">یک سوال امنیتی انتخاب کنید:</label>
+                            <select name="security_q" class="form-control" id="id_security_q">
+                                {% for option in form.security_q %}
+                                    {{ option }}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label for="id_security_key">پاسخ به سوال امنیتی:</label>
+                            <input type="text" name="security_key" value="{{ user.security_key }}"
+                                   id="id_security_key"
+                                   class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <input type="submit" class="btn btn-success" value="ویرایش حساب">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#preview').attr('src', e.target.result);
+                    $('#preview').show();
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+{% endblock %}

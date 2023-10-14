@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load jalali_tags %}
+
+{% block title %}
+    ارسال محتوا جدید
+{% endblock %}
+
+{% block load_css %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">ارسال محتوا</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="form-row">
+
+                        <div class="form-group col-md-4">
+                            <label for="id_type">نوع محتوا:</label>
+                            <select name="type" class="form-control" id="id_type" required>
+                                {% for type in form.type %}
+                                    {{ type }}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="id_number">شماره محتوا:</label>
+                            <input type="text" class="form-control" name="number" maxlength="10" id="id_number"
+                                   required>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="id_title">موضوع:</label>
+                            <input type="text" class="form-control" name="title" maxlength="200" required
+                                   id="id_title">
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label for="id_description">توضیحات:</label>
+                            <textarea name="description" class="form-control" cols="100" rows="10" required
+                                      id="id_description"></textarea>
+                        </div>
+
+                        {#                        <div class="col-md-3">#}
+                        {#                            <div class="form-group">#}
+                        {#                                <label for="id_pdf_file">ارسال فایل PDF:</label>#}
+                        {#                                <input type="file" class="form-control" name="pdf_file" id="id_pdf_file"#}
+                        {#                                       onchange="changeBorderColor(this)">#}
+                        {#                            </div>#}
+                        {#                        </div>#}
+
+                        {#                        <div class="col-md-3">#}
+                        {#                            <div class="form-group">#}
+                        {#                                <label for="id_image_file">ارسال تصویر:</label>#}
+                        {#                                <input type="file" class="form-control" name="image_file" accept="image/*"#}
+                        {#                                       id="id_image_file" onchange="changeBorderColor(this)">#}
+                        {#                            </div>#}
+                        {#                        </div>#}
+
+                        <div class="col-md-3">
+                            <div class="form-group col-md-4 text-left">
+                                <label for="id_attachment">افزودن فایل:</label>
+                                <input type="file" name="attachment" id="id_attachment" class="btn-outline-success"
+                                       multiple="multiple">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <div class="form-check">
+                                <br>
+                                <input type="checkbox" class="form-check-input" name="for_behvarz" id="id_for_behvarz">
+                                <label class="form-check-label" for="id_for_behvarz">نمایش به بهورزان</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="for_expرت" id="id_for_expert">
+                                <label class="form-check-label" for="id_for_expert">نمایش به کارشناسان</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="id_tags">تگ‌ها:</label>
+                            <input type="text" class="form-control" name="tags" maxlength="200" id="id_tags"
+                                   autocomplete="off">
+                            <div id="suggestions" class="suggestions">
+                                <!-- اینجا تگ‌ها نمایش داده می‌شوند -->
+                            </div>
+                        </div>
+
+                        {#                        <div class="form-group col-md-2">#}
+                        {#                            <label for="id_tags">تگ‌ها:</label>#}
+                        {#                            <input type="text" class="form-control" name="tags" maxlength="200"#}
+                        {#                                   id="id_tags"#}
+                        {#                                   autocomplete="off">#}
+                        {#                            <div id="suggestions" class="suggestions">#}
+                        {#                                <!-- اینجا تگ‌ها نمایش داده می‌شوند -->#}
+                        {#                            </div>#}
+                        {#                        </div>#}
+
+                        <div class="form-group col-md-3">
+                            <label for="id_status">وضعیت محتوا:</label>
+                            <select name="status" class="form-control" id="id_status">
+                                <option value="">---------</option>
+                                <option value="drf" selected>Draft</option>
+                                <option value="pub">Published</option>
+                            </select>
+                        </div>
+
+                        <div id="selectedTags" name="selected_tags" class="form-group col-md-12">
+                            <!-- اینجا تگ‌های انتخاب شده نمایش داده می‌شوند -->
+                            {% for tag in selected_tags %}
+                                <div class="tag">
+                                    {{ tag }}
+                                    <span class="remove-tag" onclick="removeTag('{{ tag|escapejs }}')">×</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {#                        <input type="hidden" name="selected_tags" id="selected_tags_input">#}
+
+                    </div>
+
+
+                    <button type="submit" class="btn btn-success">ذخیره</button>
+                    <span> <a href="/instructions/listIns/" class="btn btn-info">انصراف</a> </span>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function changeBorderColor(input) {
+            var validFormats = ['pdf', 'jpg', 'jpeg', 'png'];
+            var fileFormat = input.value.split('.').pop().toLowerCase();
+
+            if (validFormats.includes(fileFormat)) {
+                input.style.borderColor = 'green';
+            } else {
+                input.style.borderColor = '';
+            }
+        }
+
+        async function addTagToDOM(tagName) {
+            var addedTagsContainer = document.getElementById('addedTags');
+            var tagElement = document.createElement('div');
+            tagElement.className = 'tag';
+            tagElement.innerText = tagName;
+            addedTagsContainer.appendChild(tagElement);
+        }
+
+        var addedTags = []; // لیست تگ‌های اضافه شده
+
+        function tagAlreadyAdded(tagName) {
+            return addedTags.includes(tagName);
+        }
+
+        function removeTag(tagName) {
+            addedTags = addedTags.filter(tag => tag !== tagName);
+        }
+
+        async function addTag(tagName, tagID) {
+            addedTags.push({
+                name: tagName,
+                id: tagID
+            });
+            console.log('Received Tag ID:', tagID);
+            console.log('Received Tag Name:', tagName);
+
+            if (tagAlreadyAdded(tagName)) {
+                alert('تگ قبلاً افزوده شده است.');
+                return;
+            }
+
+            var tagsContainer = document.getElementById('selectedTags');
+            var tagElement = document.createElement('div');
+            tagElement.className = 'tag';
+            tagElement.innerText = tagName;
+
+            // اضافه کردن دکمه حذف
+            var removeButton = document.createElement('span');
+            removeButton.className = 'remove-tag';
+            removeButton.innerText = '×';
+            removeButton.addEventListener('click', function () {
+                removeTag(tagName);
+                tagElement.remove(); // حذف تگ از DOM
+            });
+
+            tagElement.appendChild(removeButton);
+            tagsContainer.appendChild(tagElement);
+
+            var inputId = document.createElement('input');
+            inputId.type = 'hidden';
+            inputId.name = 'tag_ids';
+            inputId.value = tagID;
+
+            document.forms[0].appendChild(inputId);
+            // افزودن تگ به ورودی hidden
+            var selectedTagsInput = document.createElement('input');
+            selectedTagsInput.type = 'hidden';
+            selectedTagsInput.name = 'selected_tags';
+            selectedTagsInput.value += tagName + ','; // اضافه کردن تگ به لیست تگ‌ها
+            tagsContainer.appendChild(selectedTagsInput);
+            document.getElementById('id_tags').value = ''; // این خط مقدار ورودی را بازنشانی می‌کند
+        }
+
+        var currentTagName = ''; // تعریف متغیر گلوبال
+
+        document.getElementById('id_tags').addEventListener('input', function () {
+            var input = this;
+            var query = input.value;
+            if (query.length >= 1) {
+                fetch('/instructions/get_suggested_tags/?query=' + query)
+                    .then(response => response.json())
+                    .then(data => {
+                        var suggestionsDiv = document.getElementById('suggestions');
+                        suggestionsDiv.innerHTML = '';
+                        data.suggestions.forEach(function (suggestion) {
+                            var suggestionElement = document.createElement('div');
+                            suggestionElement.innerText = suggestion.name;
+                            suggestionElement.addEventListener('click', function () {
+                                // اگر کلیک شد، تگ را اضافه کنید
+                                addTag(suggestion.name, suggestion.id); // اینجا suggestion.id  نمایانگر آی‌دی تگ است
+                                input.value = '';
+                                suggestionsDiv.innerHTML = '';
+                            });
+                            suggestionsDiv.appendChild(suggestionElement);
+                        });
+                    });
+            } else {
+                document.getElementById('suggestions').innerHTML = '';
+            }
+        });
+    </script>
+
+
+    <style>
+        input:invalid,
+        select:invalid {
+            border-color: red;
+        }
+
+        .remove-tag {
+            color: red;
+            cursor: pointer;
+            font-size: 1.3em; /* یا هر اندازه دلخواه دیگر */
+            font-weight: bold; /* نمایش علامت حذف بصورت بولد شده */
+            padding-left: 0px; /* تغییر فاصله به سمت راست */
+            padding-right: 0px; /* تغییر فاصله به سمت چپ */
+            margin-right: 4px; /* تغییر فاصله به سمت راست */
+            margin-left: 0px; /* تغییر فاصله به سمت چپ */
+        }
+
+        .tag {
+            display: inline-block;
+            margin-right: 5px;
+            background-color: #f2f2f2;
+            padding: 5px 10px;
+            border-radius: 5px; /* تنظیم شعاع لبه‌های چهارگوش */
+        }
+    </style>
+
+{% endblock %}

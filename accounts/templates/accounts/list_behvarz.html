@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load jalali_tags %}
+{% load persian_translation_tags %}
+
+{% block title %}
+    لیست مراقبین سلامت
+{% endblock %}
+
+{% block content %}
+    <form method="get">
+        <div class="form-group">
+            <label for="search">جستجو:</label>
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" id="search">
+        </div>
+        <button type="submit" class="btn btn-primary">جستجو</button>
+    </form>
+    <br>
+
+    {% if user.is_superuser or user.user_type == 'manager' %}
+        <a href="{% url 'behvarz_register' %}">ثبتنام مراقب سلامت</a>
+    {% endif %}
+
+    <br><br>
+    {% if message %}
+        <p>{{ message }}</p>
+    {% else %}
+        <table class="table" dir="rtl">
+            <thead>
+            <tr>
+                <th>ردیف</th>
+                <th>کد ملی</th>
+                <th>نام</th>
+                <th>نام خانوادگی</th>
+                <th>جنسیت</th>
+                <th>تاریخ تولد</th>
+                <th>شماره همراه</th>
+                <th>تحصیلات</th>
+                <th>استان</th>
+                <th>شهرستان</th>
+                <th>مرکز بهداشتی</th>
+                <th>روستا</th>
+                <th>عملیات</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for behvarz in behvarz_list %}
+                <tr>
+                    <td>{{ forloop.counter|translate_numbers }}</td>
+                    <td>{{ behvarz.username|translate_numbers }}</td>
+                    <td>{{ behvarz.first_name }}</td>
+                    <td>{{ behvarz.last_name }}</td>
+                    <td>{{ behvarz.gender }}</td>
+                    <td>{{ behvarz.birthday|to_jalali:'%Y/%m/%d'|translate_numbers}}</td>
+                    <td>{{ behvarz.cell_phone|translate_numbers }}</td>
+                    <td>{{ behvarz.get_education_display }}</td>
+                    <td>{{ behvarz.province }}</td>
+                    <td>{{ behvarz.city }}</td>
+                    <td>{{ behvarz.health_center|translate_numbers }}</td>
+                    <td>{{ behvarz.village|translate_numbers }}</td>
+                    <td>
+                        {% if user.is_superuser or user.user_type == 'manager' %}
+                            <a class="text text-green" href="{% url 'behvarz_update' behvarz.id %}">ویرایش</a>
+                            <span> | </span>
+                            <a class="text text-red" href="{% url 'behvarz_delete' behvarz.id %}">حذف</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10">بهورزی با این مشخصات یافت نشد.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+لیست ثبتنام های ناقص
+{% endblock %}
+
+{% block content %}
+
+    {% for user in incomplete_users %}
+
+        {{ user.first_name }}
+
+    {% endfor %}
+
+{% endblock %}

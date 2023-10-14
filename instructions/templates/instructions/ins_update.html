@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    ویرایش محتوا
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">ویرایش محتوا</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'instruction_update' pk=instruction.pk %}"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+
+                            <label for="id_type">نوع محتوا:</label>
+                            <select name="type" class="form-control" id="id_type"
+                                    aria-selected="{{ instruction.type }}" required>
+                                {% for type in form.type %}
+                                    {{ type }}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="id_number">شماره محتوا:</label>
+                            <input type="text" class="form-control" name="number" maxlength="10" id="id_number"
+                                   value="{{ instruction.number }}" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="id_title">موضوع:</label>
+                            <input type="text" class="form-control" name="title" maxlength="200" required id="id_title"
+                                   value="{{ instruction.title }}">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="id_description">توضیحات:</label>
+                            <textarea name="description" class="form-control" cols="100" rows="10" required
+                                      id="id_description"> {{ instruction.description }}</textarea>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="id_attachment">افزودن فایل:</label>
+                            <input type="file" name="attachment" id="id_attachment" class="btn-outline-success"
+                                   multiple="multiple">
+                        </div>
+                        <div class="form-group col-md-2">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="for_behvarz" id="id_for_behvarz"
+                                        {% if form.instance.for_behvarz %}
+                                       checked
+                                        {% endif %}
+                                >
+                                <label class="form-check-label" for="id_for_behvarz">نمایش به بهورزان</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="for_expert" id="id_for_expert"
+                                        {% if form.instance.for_expert %}
+                                       checked
+                                        {% endif %}
+                                >
+                                <label class="form-check-label" for="id_for_expert">نمایش به کارشناسان</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label for="id_status">وضعیت محتوا:</label>
+                            <select name="status" class="form-control" id="id_status">
+                                <option value="">---------</option>
+                                <option value="drf" {% if form.status.value == "drf" %}selected{% endif %}>Draft
+                                </option>
+                                <option value="pub" {% if form.status.value == "pub" %}selected{% endif %}>Published
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="id_status">حذف فایل های آپلود شده:</label>
+                            {{ form.selected_attachments }}
+                        </div>
+                    </div>
+
+                    {% if form_errors %}
+                        <ul class="errorlist">
+                            {% for field, errors in form_errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ field }}: {{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <button type="submit" class="btn btn-success">ذخیره</button>
+                    <span> <a href="{% url 'self_instruction_list' %}" class="btn btn-info">انصراف</a> </span>
+
+                </form>
+
+                {#    <div class="col-md-12">#}
+                {#        <div class="card card-primary">#}
+                {#            <div class="card-header">#}
+                {#                <h3 class="card-title mb-3 float-left">ویرایش محتوا</h3>#}
+                {#            </div>#}
+                {#            <div class="card-body">#}
+                {#                <form method="post" enctype="multipart/form-data">#}
+                {#                    {% csrf_token %}#}
+                {##}
+                {#                    <div class="form-row">#}
+                {##}
+                {#                        <div class="form-group col-md-4">#}
+                {#                            <label for="id_type">نوع محتوا:</label>#}
+                {#                            <select name="type" class="form-control" id="id_type"#}
+                {#                                    aria-selected="{{ instruction.type }}" required>#}
+                {#                                {% for type in form.type %}#}
+                {#                                    {{ type }}#}
+                {#                                {% endfor %}#}
+                {#                            </select>#}
+                {#                        </div>#}
+                {##}
+                {#                        <div class="form-group col-md-4">#}
+                {#                            <label for="id_number">شماره محتوا:</label>#}
+                {#                            <input type="text" class="form-control" name="number" maxlength="10" id="id_number"#}
+                {#                                   value="{{ instruction.number }}" required>#}
+                {#                        </div>#}
+                {##}
+                {#                        <div class="form-group col-md-4">#}
+                {#                            <label for="id_title">موضوع:</label>#}
+                {#                            <input type="text" class="form-control" name="title" maxlength="200" required id="id_title"#}
+                {#                                   value="{{ instruction.title }}">#}
+                {#                        </div>#}
+                {##}
+                {#                        <div class="form-group col-md-12">#}
+                {#                            <label for="id_description">توضیحات:</label>#}
+                {#                            <textarea name="description" class="form-control" cols="100" rows="10" required#}
+                {#                                      id="id_description"> {{ instruction.description }}</textarea>#}
+                {#                        </div>#}
+                {##}
+                {#                        <div class="col-md-3">#}
+                {#                            <div class="form-group col-md-4 text-left">#}
+                {#                                <label for="id_attachments">افزودن فایل:</label>#}
+                {#                                <input type="file" name="attachments" id="id_attachments" class="btn-outline-success"#}
+                {#                                       multiple="multiple">#}
+                {#                            </div>#}
+                {#                            {% if attachments %}#}
+                {#                                <div>#}
+                {#                                    <label>فایل‌های بارگذاری شده:</label>#}
+                {#                                    <table class="table">#}
+                {#                                        <thead>#}
+                {#                                        <tr>#}
+                {#                                            <th>ردیف</th>#}
+                {#                                            <th>نام فایل</th>#}
+                {#                                            <th>عملیات</th>#}
+                {#                                        </tr>#}
+                {#                                        </thead>#}
+                {#                                        <tbody>#}
+                {#                                        {% for attachment in attachments %}#}
+                {#                                            <tr id="attachment-{{ attachment.id }}">#}
+                {#                                                <td>{{ forloop.counter }}</td>#}
+                {#                                                <td>{{ attachment.file_name }}</td>#}
+                {#                                                <td>#}
+                {#                                                    <button type="button" class="btn btn-outline-danger btn-sm"#}
+                {#                                                            onclick="deleteAttachment({{ attachment.id }})">#}
+                {#                                                        <i class="fa fa-trash"></i>#}
+                {#                                                    </button>#}
+                {#                                                </td>#}
+                {#                                            </tr>#}
+                {#                                        {% endfor %}#}
+                {#                                        </tbody>#}
+                {#                                    </table>#}
+                {#                                </div>#}
+                {#                            {% endif %}#}
+                {#                        </div>#}
+                {##}
+                {#                        <div class="form-group col-md-2">#}
+                {#                            <div class="form-check">#}
+                {#                                <br>#}
+                {#                                <input type="checkbox" class="form-check-input" name="for_behvarz" id="id_for_behvarz"#}
+                {#                                       {% if form.instance.for_behvarz %}#}
+                {#                                           checked#}
+                {#                                       {% endif %}#}
+                {#                                >#}
+                {#                                <label class="form-check-label" for="id_for_behvarz">نمایش به بهورزان</label>#}
+                {#                            </div>#}
+                {#                        #}
+                {#                            <div class="form-check">#}
+                {#                                <input type="checkbox" class="form-check-input" name="for_expert" id="id_for_expert"#}
+                {#                                       {% if form.instance.for_expert %}#}
+                {#                                           checked#}
+                {#                                       {% endif %}#}
+                {#                                >#}
+                {#                                <label class="form-check-label" for="id_for_expert">نمایش به کارشناسان</label>#}
+                {#                            </div>#}
+                {#                        </div>#}
+                {##}
+                {#                        <div class="form-group col-md-3">#}
+                {#                            <label for="id_status">وضعیت محتوا:</label>#}
+                {#                            <select name="status" class="form-control" id="id_status">#}
+                {#                                <option value="">---------</option>#}
+                {#                                <option value="drf" {% if form.status.value == "drf" %}selected{% endif %}>Draft#}
+                {#                                </option>#}
+                {#                                <option value="pub" {% if form.status.value == "pub" %}selected{% endif %}>Published#}
+                {#                                </option>#}
+                {#                            </select>#}
+                {#                        </div>#}
+                {#                    </div>#}
+                {#            </div>#}
+                {#        </div>#}
+                {#        <button type="submit" class="btn btn-success">ذخیره</button>#}
+                {#        <span> <a href="{% url 'self_instruction_list' %}" class="btn btn-info">انصراف</a> </span>#}
+                {#        </form>#}
+                {#    </div>#}
+                {#    <br><br>#}
+
+{% endblock %}

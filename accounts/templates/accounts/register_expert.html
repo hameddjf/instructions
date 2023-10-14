@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+    ثبتنام کارشناس جدید
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">حساب کاربری</h3>
+            </div>
+            <div class="card-body">
+                {#        <div class="container">#}
+                {#            <form method="post" action="" name="expertCreationForm">#}
+                {#                {% csrf_token %}#}
+                {#                {{ form.as_p }}#}
+                {#                <input type="submit" class="btn btn-success" value="accept">#}
+                {#            </form>#}
+                {#        </div>#}
+                <form method="post" id="expertCreationForm" novalidate>
+                    {% csrf_token %}
+                    <div class="form-row">
+
+                        <label for="id_user_type" hidden="hidden">User type:</label>
+                        <select name="user_type" id="id_user_type" hidden="hidden">
+                            <option value="expert" selected>Expert</option>
+                        </select>
+                        <div class="form-group col-md-3">
+                            <label for="id_username">شماره ملی</label>
+                            <input type="text" class="form-control" name="username" maxlength="10" autofocus required
+                                   id="id_username">
+                            </div>
+
+                        <div class="form-group col-md-3">
+                                <label for="id_first_name">نام:</label>
+                                <input type="text" class="form-control" name="first_name" id="id_first_name">
+                            </div>
+
+                        <div class="form-group col-md-3">
+                                <label for="id_last_name">نام خانوادگی:</label>
+                                <input type="text" class="form-control" name="last_name" id="id_last_name">
+                            </div>
+
+                        <div class="form-group col-md-3">
+                                <label for="id_gender">جنسیت:</label>
+                                <select name="gender" class="form-control" id="id_gender">
+                                    {% for gender in form.gender %}
+                                    {{ gender }}
+                                {% endfor %}
+                                </select>
+                            </div>
+
+                        <div class="form-group col-md-3">
+                                <label for="id_birthday">تاریخ تولد:</label>
+                                <input type="text" class="form-control" name="birthday" id="id_birthday">
+                            </div>
+
+                        <div class="form-group col-md-3">
+                                <label for="id_cell_phone">شماره همراه:</label>
+                                <input type="number" class="form-control" maxlength="10" name="cell_phone" id="id_cell_phone">
+                            </div>
+
+                                <label for="id_password1" hidden="hidden">Password:</label>
+                                <input type="password" name="password1" autocomplete="new-password" id="id_password1"
+                                       hidden="hidden">
+
+                                <label for="id_password2" hidden="hidden">Password confirmation:</label>
+                                <input type="password" name="password2" autocomplete="new-password" id="id_password2"
+                                       hidden="hidden">
+
+                    <div class="form-group col-md-3">
+                                    <label for="id_province">استان:</label>
+                                    {% if user.user_type == 'manager' %}
+                                {% with manager_province=user.province %}
+                                    <select name="province" class="form-control" id="id_province" disabled>
+                                        <option value="{{ default_province_id }}">{{ manager_province.name }}</option>
+                                    </select>
+                                {% endwith %}
+                            {% else %}
+                                <select name="province" class="form-control" id="id_province">
+                                    <option value="">---------</option>
+                                    {% for province in Province.objects.all %}
+                                        {% if province.id == default_province_id %}
+                                            <option value="{{ province.id }}" selected>{{ province.name }}</option>
+                                        {% else %}
+                                            <option value="{{ province.id }}">{{ province.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+                                <div class="form-group col-md-3">
+                            <label for="id_city">شهرستان:</label>
+                        {% if user.user_type == 'manager' %}
+                                {% with manager_city=user.city %}
+                                    <select name="city" class="form-control" id="id_city" disabled>
+                                        <option value="{{ default_city_id }}">{{ manager_city.name }}</option>
+                                    </select>
+                                {% endwith %}
+                            {% else %}
+                                <select name="city" class="form-control" id="id_city">
+                                    <option value="">---------</option>
+                                    {% for city in City.objects.all %}
+                                        {% if city.id == default_city_id %}
+                                            <option value="{{ city.id }}" selected>{{ city.name }}</option>
+                                        {% else %}
+                                            <option value="{{ city.id }}">{{ city.name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+                                <div class="form-group col-md-3">
+                            <label for="id_health_centers">مرکز بهداشتی و درمانی:</label>
+                            <select name="health_center" class="form-control" id="id_health_centers">
+                                <option value="">---------</option>
+                                {% for health_center in health_centers %}
+                                    <option value="{{ health_center.pk }}" data-city="{{ health_center.city.pk }}"
+                                            style="display: none;">{{ health_center.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                            <button type="submit" class="btn btn-success">ثبتنام</button>
+                            <span>  <a href="{% url 'expert_list' %}" class="btn btn-info">انصراف</a> </span>
+                </form>
+
+                <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+                <script>
+                    $(document).ready(function () {
+                        // Show only the cities of the selected province
+                        $("#id_province").change(function () {
+                            var provinceId = $(this).val();
+                            $("#id_city option").each(function () {
+                                if ($(this).data("province") == provinceId || $(this).val() == "") {
+                                    $(this).show();
+                                } else {
+                                    $(this).hide();
+                                }
+                            });
+                            $("#id_city").val("");
+                            $("#id_health_centers").val("");
+                            $("#id_villages").val("");
+                        });
+
+                        // Show only the health centers of the selected city
+                        $("#id_city").change(function () {
+                            var cityId = $(this).val();
+                            $("#id_health_centers option").each(function () {
+                                if ($(this).data("city") == cityId || $(this).val() == "") {
+                                    $(this).show();
+                                } else {
+                                    $(this).hide();
+                                }
+                            });
+                            $("#id_health_centers").val("");
+                            $("#id_villages").val("");
+                        });
+
+                        // Show only the villages of the selected health center
+                        $("#id_health_centers").change(function () {
+                            var healthCenterId = $(this).val();
+                            $("#id_villages option").each(function () {
+                                if ($(this).data("health-center") == healthCenterId || $(this).val() == "") {
+                                    $(this).show();
+                                } else {
+                                    $(this).hide();
+                                }
+                            });
+                            $("#id_villages").val("");
+                        });
+
+                        // Initialize the form with the default province, city, and health center
+                        var defaultProvinceId = "{{ default_province_id }}";
+                        var defaultCityId = "{{ default_city_id }}";
+                        var defaultHealthCenterId = "{{ default_health_center_id }}";
+                        if (defaultProvinceId) {
+                            $("#id_province").val(defaultProvinceId).trigger("change");
+                        }
+                        if (defaultCityId) {
+                            $("#id_city").val(defaultCityId).trigger("change");
+                        }
+                        if (defaultHealthCenterId) {
+                            $("#id_health_centers").val(defaultHealthCenterId).trigger("change");
+                        }
+                    });
+                </script>
+                <script>
+                    $(document).ready(function () {
+                        // Set the password field equal to the username field
+                        $("#id_username").on("input", function () {
+                            var username = $(this).val();
+                            $("#id_password1").val(username);
+                            $("#id_password2").val(username);
+                        });
+                    });
+                </script>
+{% endblock %}

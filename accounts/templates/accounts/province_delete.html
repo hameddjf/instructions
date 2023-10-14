@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{#{% load crispy_forms_tags %}#}
+
+{% block title %}
+    Province delete
+{% endblock %}
+
+{% block content %}
+    <h1>province delete page</h1>
+    <h3>are you sure delete the {{ province.name }} ?!</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="{% url 'province_add_list' %}">
+            <button type="button" class="btn btn-success">Province List</button>
+        </a>
+    </form>
+{% endblock %}

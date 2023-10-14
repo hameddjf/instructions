@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    لیست تیکت‌های ارسالی
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title mb-3 float-left">لیست تیکت های ارسالی</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        {% if request.user.is_superuser %}
+                            <th>شماره ملی</th>
+                            <th>نام و نام خانوادگی</th>
+                        {% endif %}
+                        <th>عنوان</th>
+                        <th>توضیحات</th>
+                        <th>اولویت</th>
+                        <th>وضعیت تیکت</th>
+                        <th>تاریخ ایجاد</th>
+                        <th>عملیات</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in tickets %}
+                        {% if ticket.user == request.user or request.user.is_superuser %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                {% if request.user.is_superuser %}
+                                    <td>{{ ticket.user.username }}</td>
+                                    <td>{{ ticket.user.get_full_name }}</td>
+                                {% endif %}
+                                <td>{{ ticket.title }}
+                                    {% if ticket.user == request.user and ticket.read_by_user and ticket.status == 'open' %}
+                                        <span class="right badge badge-danger">پیغام جدید</span>
+                                    {% elif request.user.is_superuser and ticket.read_by_superuser %}
+                                        <span class="right badge badge-danger">پیغام جدید</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ ticket.description|slice:":20" }}</td>
+                                <td>{{ ticket.priority }}</td>
+                                <td>{{ ticket.status }}</td>
+                                <td>{{ ticket.created_at }}</td>
+                                <td>
+                                    <a href="{% url 'detail_ticket' ticket.id %}" class="btn btn-outline-primary">نمایش
+                                        جزئیات</a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">هیچ تیکتی موجود نیست.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
